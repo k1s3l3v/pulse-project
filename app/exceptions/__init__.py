@@ -1,0 +1,52 @@
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
+from sqlalchemy.exc import OperationalError
+
+
+class ExceptionWithMessage(Exception):
+    def __init__(self, message: str):
+        super(ExceptionWithMessage, self).__init__(message)
+        self.message = message
+
+
+class ModelNotFoundError(ExceptionWithMessage):
+    def __init__(self, model: str, *args: int):
+        message = f'{model} ({", ".join(map(str, args))}) not found'
+        super(ModelNotFoundError, self).__init__(message)
+
+
+class DeletionError(ExceptionWithMessage):
+    def __init__(self, model: str, *args: int):
+        message = f"{model} ({', '.join(map(str, args))}) can't be deleted"
+        super(DeletionError, self).__init__(message)
+
+
+class ServiceDeliveryError(ExceptionWithMessage):
+    pass
+
+
+class ServiceResponseError(ExceptionWithMessage):
+    pass
+
+
+def init_app(app: FastAPI):
+    @app.exception_handler(ModelNotFoundError)
+    def handle_model_not_found_error(request: Request, exc: ModelNotFoundError):
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={'detail': exc.message})
+
+    @app.exception_handler(DeletionError)
+    def handle_deletion_error(request: Request, exc: DeletionError):
+        return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content={'detail': exc.message})
+
+    @app.exception_handler(ServiceDeliveryError)
+    def handle_deletion_error(request: Request, exc: ServiceDeliveryError):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={'detail': exc.message})
+
+    @app.exception_handler(ServiceResponseError)
+    def handle_deletion_error(request: Request, exc: ServiceResponseError):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={'detail': exc.message})
+
+    @app.exception_handler(OperationalError)
+    def handle_operational_error(request: Request, exc: OperationalError):
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            content={'detail': 'Unable to establish a connection to the database'})
