@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from sqlalchemy import Column, DateTime
 
 from ...utils import now
@@ -11,3 +11,7 @@ class DateORMMixin:
     @classmethod
     def now(cls) -> datetime:
         return now()
+
+    @classmethod
+    def date_now(cls) -> date:
+        return now().date()

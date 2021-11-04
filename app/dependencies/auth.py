@@ -12,8 +12,10 @@ apiKey_scheme = APIKeyHeader(name='authorization',
                              auto_error=False)
 
 
-# TODO fill urls
-oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl='', tokenUrl='', refreshUrl='', auto_error=False)
+oauth2_scheme = OAuth2AuthorizationCodeBearer(
+    authorizationUrl='https://keycloak.itsociety.su/auth/realms/its/protocol/openid-connect/auth',
+    tokenUrl='https://keycloak.itsociety.su/auth/realms/its/protocol/openid-connect/token',
+    refreshUrl='https://keycloak.itsociety.su/auth/realms/its/protocol/openid-connect/token', auto_error=False)
 
 
 async def _verify_token(access_token: str) -> int:

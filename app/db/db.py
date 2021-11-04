@@ -15,3 +15,7 @@ def disconnect_db():
 
 def create_session() -> Session:
     return _session_factory()
+
+
+def get_session_factory() -> sessionmaker:
+    return _session_factory

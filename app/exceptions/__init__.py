@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import OperationalError
+from typing import Union
 
 
 class ExceptionWithMessage(Exception):
@@ -9,8 +10,14 @@ class ExceptionWithMessage(Exception):
         self.message = message
 
 
+class CreationError(ExceptionWithMessage):
+    def __init__(self, model: str, message: str):
+        message_ = f"{model} can't be created: {message}"
+        super(CreationError, self).__init__(message_)
+
+
 class ModelNotFoundError(ExceptionWithMessage):
-    def __init__(self, model: str, *args: int):
+    def __init__(self, model: str, *args: Union[int, str]):
         message = f'{model} ({", ".join(map(str, args))}) not found'
         super(ModelNotFoundError, self).__init__(message)
 
@@ -30,6 +37,10 @@ class ServiceResponseError(ExceptionWithMessage):
 
 
 def init_app(app: FastAPI):
+    @app.exception_handler(CreationError)
+    def handle_creation_error(request: Request, exc: CreationError):
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'detail': exc.message})
+
     @app.exception_handler(ModelNotFoundError)
     def handle_model_not_found_error(request: Request, exc: ModelNotFoundError):
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={'detail': exc.message})

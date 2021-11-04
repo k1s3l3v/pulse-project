@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from ...exceptions import DeletionError, ModelNotFoundError
 from ...models import BaseORM
+from ...models.orms.base import PKType
 from ...utils import any_in, commit_transaction
 
 
@@ -15,13 +16,14 @@ class Base:
 
     columns_to_update: List[Column] = []
     simple_columns_to_update: List[Column] = []
+    editable_pk_columns: List[Column] = []
 
     @classmethod
     def get_columns(cls) -> List[Column]:
         return list(cls.model.__table__.columns.values())
 
     @classmethod
-    def get_by_id(cls, db: Session, *args: int) -> BaseORM:
+    def get_by_id(cls, db: Session, *args: PKType) -> BaseORM:
         filters = {pk_name: pk_value for pk_name, pk_value in zip(cls.model.get_pk_names(), args)}
         return db.query(cls.model).filter_by(**filters).first()
 
@@ -57,41 +59,40 @@ class Base:
         return object_
 
     @classmethod
-    def _create_from_dict(cls, data: DictStrAny) -> BaseORM:
-        object_ = cls.model()
-        return cls._update_columns(object_, data, cls.get_columns())
-
-    @classmethod
-    async def _before_create(cls, object_: BaseORM):
+    async def _before_create(cls, db: Session, object_: BaseORM):
         pass
 
     @classmethod
     async def create(cls, db: Session, data: DictStrAny) -> BaseORM:
-        object_ = cls._create_from_dict(data)
-        await cls._before_create(object_)
+        object_ = cls.model(**data)
+        await cls._before_create(db, object_)
         db.add(object_)
         return object_
 
     @classmethod
-    def check_existence(cls, db: Session, *args: int) -> BaseORM:
+    def check_existence(cls, db: Session, *args: PKType) -> BaseORM:
         object_ = cls.get_by_id(db, *args)
         if object_ is None:
             raise ModelNotFoundError(cls.model.__name__[:-3], *args)
         return object_
 
     @classmethod
-    def _update_complicated_columns(cls, db: Session, object_: BaseORM, data: DictStrAny) -> BaseORM:
+    async def _update_complicated_columns(cls, db: Session, object_: BaseORM, data: DictStrAny) -> BaseORM:
         return object_
 
     @classmethod
     def _need_to_update(cls, data: DictStrAny) -> bool:
-        return any_in([column.name for column in cls.columns_to_update], data)
+        return any_in([column.key for column in cls.columns_to_update], data)
 
     @classmethod
-    async def update(cls, db: Session, data: DictStrAny) -> BaseORM:
-        object_ = cls.check_existence(db, *(data[pk_name] for pk_name in cls.model.get_pk_names()))
+    async def update(cls, db: Session, data: DictStrAny, *args: PKType) -> BaseORM:
+        object_ = cls.check_existence(db, *args)
+        for pk_column in filter(lambda c: c not in cls.editable_pk_columns, cls.model.get_pk_columns()):
+            data.pop(pk_column.key, None)
+        if not cls._need_to_update(data):
+            return object_
         object_ = cls._update_columns(object_, data, cls.simple_columns_to_update)
-        object_ = cls._update_complicated_columns(db, object_, data)
+        object_ = await cls._update_complicated_columns(db, object_, data)
         db.add(object_)
         return object_
 
@@ -100,7 +101,7 @@ class Base:
         pass
 
     @classmethod
-    async def delete(cls, db: Session, *args: int) -> BaseORM:
+    async def delete(cls, db: Session, *args: PKType) -> BaseORM:
         object_ = cls.check_existence(db, *args)
         if object_.can_delete:
             await cls._before_delete(object_)

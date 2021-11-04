@@ -18,3 +18,4 @@ redis
 requests
 sqlalchemy
 uvicorn
+WTForms

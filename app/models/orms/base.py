@@ -1,13 +1,17 @@
 import re
 
+from datetime import date
 from sqlalchemy import Column, inspect, Sequence
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
-from typing import Iterator, Optional, Tuple
+from typing import Iterator, Optional, Tuple, Union
 
 
 def camel_to_snake_case(name):
     name = re.sub(r'((?<=[a-z0-9])[A-Z]|(?!^)[A-Z](?=[a-z]))', r'_\1', name)
     return name.lower().lstrip('_')
+
+
+PKType = Union[int, date]
 
 
 @as_declarative()
@@ -47,6 +51,6 @@ class BaseORM:
         names: Iterator[str] = (column.name for column in inspect(cls).primary_key)
         return tuple(names)
 
-    def get_pk_values(self) -> Tuple[int]:
-        values: Iterator[int] = (identity for identity in inspect(self).identity)
+    def get_pk_values(self) -> Tuple[PKType]:
+        values: Iterator[PKType] = (identity for identity in inspect(self).identity)
         return tuple(values)

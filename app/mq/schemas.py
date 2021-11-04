@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal, Optional, Tuple, Union
 
 from ..schemas import TrimModel
 from ..utils import with_literal_default
@@ -19,6 +19,12 @@ class VerifyTokenRequest(Request):
 
 
 @with_literal_default
+class CheckProjectRequest(Request):
+    type: Literal['check_project']
+    project_id: int
+
+
+@with_literal_default
 class CheckStaffProjectRequest(Request):
     type: Literal['check_staff_project']
     staff_id: int
@@ -27,7 +33,7 @@ class CheckStaffProjectRequest(Request):
 
 
 class CheckModelResponse(Response):
-    model_id: Optional[int] = None
+    model_id: Optional[Union[int, Tuple[int, ...]]] = None
 
 
 @with_literal_default
