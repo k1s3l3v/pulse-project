@@ -1,4 +1,4 @@
-from pydantic import AnyHttpUrl, BaseSettings, Field, RedisDsn, PostgresDsn
+from pydantic import AnyHttpUrl, BaseSettings, Field, RedisDsn, PositiveInt, PostgresDsn
 from typing import List, Optional
 
 
@@ -37,6 +37,8 @@ class Settings(BaseSettings):
 
     ADMIN_USER_NAME: str
     ADMIN_USER_PASSWORD: str
+
+    LATEST_PULSE_LOG_MAX_SIZE: PositiveInt = 7
 
     class Config:
         case_sensitive = True
