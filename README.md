@@ -62,12 +62,12 @@ List of variables:
 * `PULSE_ADMIN_USER_PASSWORD` - **required**; password for default admin user for Flask-Admin
 * `PULSE_LATEST_PULSE_LOG_MAX_SIZE` - optional (`7` by default); value of the max number of Pulse log records
 
-#Views of admin panel with some values:
-* ##Project Criterion 
+# Views of admin panel with some values:
+* ## Project Criterion 
 ![img.png](imgs/img.png)
-* ##Project Criterion Value 
+* ## Project Criterion Value 
 ![img_1.png](imgs/img_1.png)
-* ##Project Specific Criterion 
+* ## Project Specific Criterion 
 ![img_2.png](imgs/img_2.png)
-* ##Project Status
+* ## Project Status
 ![img_3.png](imgs/img_3.png)
