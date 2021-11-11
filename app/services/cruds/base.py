@@ -23,12 +23,12 @@ class Base:
         return list(cls.model.__table__.columns.values())
 
     @classmethod
-    def get_by_id(cls, db: Session, *args: PKType) -> BaseORM:
+    def get_by_id(cls, db: Session, *args: PKType) -> model:
         filters = {pk_name: pk_value for pk_name, pk_value in zip(cls.model.get_pk_names(), args)}
         return db.query(cls.model).filter_by(**filters).first()
 
     @classmethod
-    def get_list(cls, db: Session, skip: int = 0, limit: Optional[int] = None) -> List[BaseORM]:
+    def get_list(cls, db: Session, skip: int = 0, limit: Optional[int] = None) -> List[model]:
         query = db.query(cls.model).order_by(*cls.model.get_pk_columns()).offset(skip)
         if limit is not None:
             query = query.limit(limit)
@@ -43,7 +43,7 @@ class Base:
         commit_transaction(db)
 
     @classmethod
-    def refresh(cls, db: Session, objects: Union[List[BaseORM], BaseORM]):
+    def refresh(cls, db: Session, objects: Union[List[model], model]):
         if isinstance(objects, list):
             for object_ in objects:
                 db.refresh(object_)
@@ -51,7 +51,7 @@ class Base:
             db.refresh(objects)
 
     @classmethod
-    def _update_columns(cls, object_: BaseORM, data: DictStrAny, columns: List[Column]) -> BaseORM:
+    def _update_columns(cls, object_: model, data: DictStrAny, columns: List[Column]) -> model:
         for column in columns:
             if column.name in data and ((data[column.name] is None and column.nullable)
                                         or data[column.name] is not None):
@@ -59,25 +59,33 @@ class Base:
         return object_
 
     @classmethod
-    async def _before_create(cls, db: Session, object_: BaseORM):
+    def create_object(cls, data: DictStrAny) -> model:
+        return cls.model(**data)
+
+    @classmethod
+    async def _before_create(cls, db: Session, data: DictStrAny) -> model:
+        return cls.model(**data)
+
+    @classmethod
+    async def _after_create(cls, db: Session, object_: model):
         pass
 
     @classmethod
-    async def create(cls, db: Session, data: DictStrAny) -> BaseORM:
-        object_ = cls.model(**data)
-        await cls._before_create(db, object_)
+    async def create(cls, db: Session, data: DictStrAny) -> model:
+        object_ = await cls._before_create(db, data)
         db.add(object_)
+        await cls._after_create(db, object_)
         return object_
 
     @classmethod
-    def check_existence(cls, db: Session, *args: PKType) -> BaseORM:
+    def check_existence(cls, db: Session, *args: PKType) -> model:
         object_ = cls.get_by_id(db, *args)
         if object_ is None:
             raise ModelNotFoundError(cls.model.__name__[:-3], *args)
         return object_
 
     @classmethod
-    async def _update_complicated_columns(cls, db: Session, object_: BaseORM, data: DictStrAny) -> BaseORM:
+    async def _update_complicated_columns(cls, db: Session, object_: model, data: DictStrAny) -> model:
         return object_
 
     @classmethod
@@ -85,8 +93,11 @@ class Base:
         return any_in([column.key for column in cls.columns_to_update], data)
 
     @classmethod
-    async def update(cls, db: Session, data: DictStrAny, *args: PKType) -> BaseORM:
-        object_ = cls.check_existence(db, *args)
+    async def _after_update(cls, db: Session, object_: model):
+        pass
+
+    @classmethod
+    async def update_object(cls, db: Session, data: DictStrAny, object_: model) -> model:
         for pk_column in filter(lambda c: c not in cls.editable_pk_columns, cls.model.get_pk_columns()):
             data.pop(pk_column.key, None)
         if not cls._need_to_update(data):
@@ -94,21 +105,31 @@ class Base:
         object_ = cls._update_columns(object_, data, cls.simple_columns_to_update)
         object_ = await cls._update_complicated_columns(db, object_, data)
         db.add(object_)
+        await cls._after_update(db, object_)
         return object_
 
     @classmethod
-    async def _before_delete(cls, object_: BaseORM):
+    async def update(cls, db: Session, data: DictStrAny, *args: PKType) -> model:
+        object_ = cls.check_existence(db, *args)
+        return await cls.update_object(db, data, object_)
+
+    @classmethod
+    async def _before_delete(cls, object_: model):
         pass
 
     @classmethod
-    async def delete(cls, db: Session, *args: PKType) -> BaseORM:
-        object_ = cls.check_existence(db, *args)
+    async def delete_object(cls, db: Session, object_: model) -> model:
         if object_.can_delete:
             await cls._before_delete(object_)
             db.delete(object_)
         else:
-            raise DeletionError(cls.model.__name__[:-3], *args)
+            raise DeletionError(cls.model.__name__[:-3], *object_.get_pk_values())
         return object_
+
+    @classmethod
+    async def delete(cls, db: Session, *args: PKType) -> model:
+        object_ = cls.check_existence(db, *args)
+        return await cls.delete_object(db, object_)
 
     @classmethod
     def init(cls, db: Session):
