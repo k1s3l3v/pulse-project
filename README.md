@@ -1,7 +1,8 @@
 # PULSE
 
 Service for tracking the status of projects
-Сервис имеет следующую функциональность:
+
+The service has the following functionality:
 * `Web interface`;
 * `Integration with a third-party authorization server (with info about users, staff and projects)`;
 * `The main page displays the current projects and the total indicator, which is calculated as
@@ -18,7 +19,6 @@ Service for tracking the status of projects
 - [Tables](#tables)
 - [Environment variables](#environment-variables)
 
-
 ## Tables
 
 This backend contains following tables
@@ -32,7 +32,7 @@ This backend contains following tables
 
 You can redefine environment variables in `pulse.env` file
 
-List of variables
+List of variables:
 
 * `PULSE_VERSION` - optional (`0.0.1` by default); version of API
 * `PULSE_DATABASE_URI` - **required**; database URI
