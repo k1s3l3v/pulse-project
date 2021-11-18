@@ -34,16 +34,17 @@ class ProjectCriterionValue(Base):
 
         project_criterion_value: ProjectCriterionValueORM = cls.create_object(data)
 
-        project_specific_criterion: ProjectSpecificCriterionORM = project_criterion_value.project_specific_criterion
-        if project_specific_criterion is None and project_criterion_value.project_id is not None \
+        if project_criterion_value.project_criterion is None \
                 and project_criterion_value.project_criterion_id is not None:
-            project_specific_criterion = ProjectSpecificCriterion.check_existence(db,
-                                                                                  project_criterion_value.project_id,
-                                                                                  project_criterion_value
-                                                                                  .project_criterion_id)
-        elif project_specific_criterion is None and (project_criterion_value.project_id is None
-                                                     or project_criterion_value.project_criterion_id is None):
-            raise CreationError('ProjectCriterionValue', 'Project criterion value must have project specific criterion')
+            project_specific_criterion: ProjectSpecificCriterionORM = \
+                ProjectSpecificCriterion.check_existence(db, project_criterion_value.project_id,
+                                                         project_criterion_value.project_criterion_id)
+        elif project_criterion_value.project_criterion is not None:
+            project_specific_criterion: ProjectSpecificCriterionORM = \
+                ProjectSpecificCriterion.check_existence(db, project_criterion_value.project_id,
+                                                         project_criterion_value.project_criterion.project_criterion_id)
+        else:
+            raise CreationError('ProjectCriterionValue', 'Project criterion value must have project criterion')
 
         db_project_criterion_value = cls.get_by_id(db, project_specific_criterion.project_id,
                                                    project_specific_criterion.project_criterion_id,
@@ -60,7 +61,7 @@ class ProjectCriterionValue(Base):
                                 f"value must be in [1; {max_value}], not '{project_criterion_value.value}'")
 
         await cls.check_remote_author_project_existence(project_criterion_value.author_id,
-                                                        project_specific_criterion.project_id)
+                                                        project_criterion_value.project_id)
 
         return project_criterion_value
 
@@ -68,10 +69,9 @@ class ProjectCriterionValue(Base):
     async def _after_create(cls, db: Session, project_criterion_value: ProjectCriterionValueORM):
         from .project_status import ProjectStatus
 
-        if project_criterion_value.project_criterion_id is None or project_criterion_value.project_id:
-            project_specific_criterion: ProjectSpecificCriterionORM = project_criterion_value.project_specific_criterion
-            project_criterion_value.project_id = project_specific_criterion.project_id
-            project_criterion_value.project_criterion_id = project_specific_criterion.project_criterion_id
+        if project_criterion_value.project_criterion_id is None:
+            project_criterion_value.project_criterion_id = \
+                project_criterion_value.project_criterion.project_criterion_id
         await ProjectStatus.update_status(db, project_criterion_value)
 
     @classmethod
@@ -92,7 +92,7 @@ class ProjectCriterionValue(Base):
     @classmethod
     async def _update_complicated_columns(cls, db: Session, project_criterion_value: ProjectCriterionValueORM,
                                           data: DictStrAny) -> ProjectCriterionValueORM:
-        max_value = project_criterion_value.project_specific_criterion.project_criterion.max_value
+        max_value = project_criterion_value.project_criterion.max_value
         if 'value' in data and 1 <= data['value'] <= max_value:
             project_criterion_value.value = data['value']
 
