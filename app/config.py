@@ -15,9 +15,11 @@ class Settings(BaseSettings):
     URL_PREFIX: str = '/pulse/api/v1'
     ADMIN_URL_PREFIX: str = '/pulse'
 
+    REDIS_URL: RedisDsn = 'redis://127.0.0.1:6379/0'
+
     CELERY_BROKER_URL: RedisDsn = 'redis://127.0.0.1:6379/1'
     CELERY_IMPORTS: List[str] = ['app.celery.tasks']
-    CELERY_TIMEZONE = 'Europe/Moscow'
+    CELERY_TIMEZONE: str = 'Europe/Moscow'
 
     ITS_CLIENT_ID: str = Field('mado', env='ITS_CLIENT_ID')
     USE_OAUTH2_AUTHORIZATION: bool = Field(True, env='USE_OAUTH2_AUTHORIZATION')
