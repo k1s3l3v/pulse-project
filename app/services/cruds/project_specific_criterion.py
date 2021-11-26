@@ -1,4 +1,5 @@
 from pydantic import ValidationError
+from typing import List
 
 from .base import Base, DictStrAny, Session
 from ...exceptions import CreationError, ModelNotFoundError, ServiceDeliveryError, ServiceResponseError
@@ -26,6 +27,10 @@ class ProjectSpecificCriterion(Base):
                                        "misunderstanding")
         if response.model_id is None:
             raise ModelNotFoundError('Project', project_id)
+
+    @classmethod
+    def get_list_by_project_id(cls, db: Session, project_id: int) -> List[ProjectSpecificCriterionORM]:
+        return db.query(cls.model).filter_by(project_id=project_id).all()
 
     @classmethod
     async def _before_create(cls, db: Session, data: DictStrAny) -> ProjectSpecificCriterionORM:
