@@ -62,11 +62,11 @@ def init_app(app: FastAPI):
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content={'detail': exc.message})
 
     @app.exception_handler(ServiceDeliveryError)
-    def handle_deletion_error(request: Request, exc: ServiceDeliveryError):
+    def handle_service_delivery_error(request: Request, exc: ServiceDeliveryError):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={'detail': exc.message})
 
     @app.exception_handler(ServiceResponseError)
-    def handle_deletion_error(request: Request, exc: ServiceResponseError):
+    def handle_service_response_error(request: Request, exc: ServiceResponseError):
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={'detail': exc.message})
 
     @app.exception_handler(OperationalError)
