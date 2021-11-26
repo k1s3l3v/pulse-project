@@ -35,3 +35,10 @@ class ProjectStatusCreate(TrimModel):
     latest_updater_id: PositiveInt = Field(None, description='Unique identifier of person who introduced last changes')
     latest_grades: Dict[str, ProjectStatusLatestGrade] = Field(..., description='Last committed grades')
     latest_log: List[ProjectStatusLatestLogRecord] = Field(..., description='Last committed logs')
+
+
+class ProjectStatus(ProjectStatusCreate):
+    project_status_id: PositiveInt = Field(..., description='The project status unique identifier')
+
+    class Config(ProjectStatusCreate.Config):
+        orm_mode = True
