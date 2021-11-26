@@ -1,9 +1,9 @@
 import uvicorn
 
-from app import init_app, settings
+from app import get_app, settings
 
 
-app = init_app()
+app = get_app()
 
 
 if __name__ == '__main__':
