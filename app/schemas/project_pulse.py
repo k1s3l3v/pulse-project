@@ -1,4 +1,5 @@
-from pydantic import Field
+from datetime import date as date_
+from pydantic import Field, PositiveInt
 from typing import List
 
 from .base import TrimModel
