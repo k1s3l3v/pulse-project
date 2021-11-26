@@ -1,11 +1,11 @@
 from sqlalchemy import Column
 from sqlalchemy.orm import Session
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Set, Union
 
 from ...exceptions import DeletionError, ModelNotFoundError
 from ...models import BaseORM
 from ...models.orms.base import PKType
-from ...utils import any_in, commit_transaction
+from ...utils import commit_transaction
 
 
 DictStrAny = Dict[str, Any]
@@ -14,9 +14,9 @@ DictStrAny = Dict[str, Any]
 class Base:
     model = BaseORM
 
-    columns_to_update: List[Column] = []
-    simple_columns_to_update: List[Column] = []
-    editable_pk_columns: List[Column] = []
+    columns_to_update: Set[Column] = set()
+    simple_columns_to_update: Set[Column] = set()
+    editable_pk_columns: Set[Column] = set()
 
     @classmethod
     def get_columns(cls) -> List[Column]:
@@ -51,10 +51,10 @@ class Base:
             db.refresh(objects)
 
     @classmethod
-    def _update_columns(cls, object_: model, data: DictStrAny, columns: List[Column]) -> model:
+    def _update_columns(cls, object_: model, data: DictStrAny, columns: Iterable[Column]) -> model:
         for column in columns:
-            if column.name in data and ((data[column.name] is None and column.nullable)
-                                        or data[column.name] is not None):
+            if column.name in data and data[column.name] != getattr(object_, column.name) \
+                    and ((data[column.name] is None and column.nullable) or data[column.name] is not None):
                 setattr(object_, column.name, data[column.name])
         return object_
 
@@ -89,8 +89,14 @@ class Base:
         return object_
 
     @classmethod
-    def _need_to_update(cls, data: DictStrAny) -> bool:
-        return any_in([column.key for column in cls.columns_to_update], data)
+    def _need_to_update(cls, data: DictStrAny, object_: model) -> bool:
+        return any(column.key in data
+                   and (column not in cls.simple_columns_to_update or data[column.key] != getattr(object_, column.key))
+                   for column in cls.columns_to_update)
+
+    @classmethod
+    def is_object_modified(cls, db: Session, object_: model, pure: bool = False) -> bool:
+        return db.is_modified(object_) if pure else object_ in db.dirty
 
     @classmethod
     async def _after_update(cls, db: Session, object_: model):
@@ -100,12 +106,13 @@ class Base:
     async def update_object(cls, db: Session, data: DictStrAny, object_: model) -> model:
         for pk_column in filter(lambda c: c not in cls.editable_pk_columns, cls.model.get_pk_columns()):
             data.pop(pk_column.key, None)
-        if not cls._need_to_update(data):
+        if not cls._need_to_update(data, object_):
             return object_
         object_ = cls._update_columns(object_, data, cls.simple_columns_to_update)
         object_ = await cls._update_complicated_columns(db, object_, data)
-        db.add(object_)
-        await cls._after_update(db, object_)
+        if cls.is_object_modified(db, object_):
+            db.add(object_)
+            await cls._after_update(db, object_)
         return object_
 
     @classmethod

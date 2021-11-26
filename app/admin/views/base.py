@@ -10,6 +10,7 @@ from flask_admin.form.fields import fields
 from flask_admin.model import typefmt
 from markupsafe import Markup
 from sqlalchemy import inspect
+from sqlalchemy.orm import Session
 from typing import List, Optional, Tuple, Type, Union
 from wtforms.validators import DataRequired, InputRequired
 
@@ -46,6 +47,8 @@ class BaseView(ModelView):
     extra_pk_fields = ()
 
     required_fields_on_create = ()
+
+    session: Session
 
     def __init__(self, model: Type[BaseORM], session, *args, **kwargs):
         if self.form_excluded_columns is None:
@@ -148,7 +151,7 @@ class BaseView(ModelView):
             try:
                 self._on_model_change(form, model, False)
                 data = {field_name: field_data for field_name, field_data in form.data.items()}
-                model = run_asyncio_coroutine(crud.update(self.session, data, *model.get_pk_values()))
+                model = run_asyncio_coroutine(crud.update_object(self.session, data, model))
                 crud.commit(self.session)
             except Exception as ex:
                 if not self.handle_view_exception(ex):
@@ -167,7 +170,7 @@ class BaseView(ModelView):
             crud: Type[cruds.Base]
             try:
                 self.on_model_delete(model)
-                run_asyncio_coroutine(crud.delete(self.session, *model.get_pk_values()))
+                run_asyncio_coroutine(crud.delete_object(self.session, model))
                 crud.commit(self.session)
             except Exception as ex:
                 if not self.handle_view_exception(ex):

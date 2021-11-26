@@ -9,9 +9,9 @@ from ...mq import CheckModelResponse, CheckProjectRequest, DeliveryError, staffC
 class ProjectSpecificCriterion(Base):
     model = ProjectSpecificCriterionORM
 
-    columns_to_update = [ProjectSpecificCriterionORM.is_mandatory]
+    columns_to_update = {ProjectSpecificCriterionORM.is_mandatory}
 
-    simple_columns_to_update = [ProjectSpecificCriterionORM.is_mandatory]
+    simple_columns_to_update = {ProjectSpecificCriterionORM.is_mandatory}
 
     @classmethod
     async def check_remote_project_existence(cls, project_id: int):

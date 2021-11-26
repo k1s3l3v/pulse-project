@@ -1,7 +1,7 @@
 from pydantic import ValidationError
 
 from .base import Base, DictStrAny, Session
-from ...exceptions import CreationError, ModelNotFoundError, ServiceDeliveryError, ServiceResponseError
+from ...exceptions import CreationError, ModelNotFoundError, ServiceDeliveryError, ServiceResponseError, UpdateError
 from ...models import ProjectCriterionValueORM, ProjectSpecificCriterionORM
 from ...mq import CheckModelResponse, CheckStaffProjectRequest, DeliveryError, staffClient
 
@@ -9,10 +9,10 @@ from ...mq import CheckModelResponse, CheckStaffProjectRequest, DeliveryError, s
 class ProjectCriterionValue(Base):
     model = ProjectCriterionValueORM
 
-    columns_to_update = [ProjectCriterionValueORM.value, ProjectCriterionValueORM.comment,
-                         ProjectCriterionValueORM.author_id]
+    columns_to_update = {ProjectCriterionValueORM.value, ProjectCriterionValueORM.comment,
+                         ProjectCriterionValueORM.author_id}
 
-    simple_columns_to_update = [ProjectCriterionValueORM.comment]
+    simple_columns_to_update = {ProjectCriterionValueORM.comment}
 
     @classmethod
     async def check_remote_author_project_existence(cls, author_id: int, project_id: int):
@@ -77,15 +77,20 @@ class ProjectCriterionValue(Base):
     @classmethod
     async def update_remote_author_relation(cls, project_criterion_value: ProjectCriterionValueORM,
                                             data: DictStrAny) -> ProjectCriterionValueORM:
-        if 'author_id' in data:
+        if 'author_id' in data and (author_id := data['author_id']) != project_criterion_value.author_id:
             try:
-                body = CheckStaffProjectRequest(project_id=project_criterion_value.project_id,
-                                                staff_id=data['author_id'])
+                body = CheckStaffProjectRequest(project_id=project_criterion_value.project_id, staff_id=author_id)
                 response = await staffClient.call(body, CheckModelResponse)
-            except (DeliveryError, ValidationError):
-                return project_criterion_value
+            except DeliveryError:
+                raise ServiceDeliveryError("Project criterion value can't be updated due to troubles with services "
+                                           "connection")
+            except ValidationError:
+                raise ServiceResponseError("Project criterion value can't be updated due to service response "
+                                           "misunderstanding")
             if response.model_id is not None:
-                project_criterion_value.author_id = data['author_id']
+                project_criterion_value.author_id = author_id
+            else:
+                raise ModelNotFoundError('StaffProjectRole', author_id, project_criterion_value.project_id)
 
         return project_criterion_value
 
@@ -93,8 +98,11 @@ class ProjectCriterionValue(Base):
     async def _update_complicated_columns(cls, db: Session, project_criterion_value: ProjectCriterionValueORM,
                                           data: DictStrAny) -> ProjectCriterionValueORM:
         max_value = project_criterion_value.project_criterion.max_value
-        if 'value' in data and 1 <= data['value'] <= max_value:
-            project_criterion_value.value = data['value']
+        if 'value' in data and (value := data['value']) != project_criterion_value.value:
+            if 1 <= value <= max_value:
+                project_criterion_value.value = value
+            else:
+                raise UpdateError(project_criterion_value, f"value must be in [1; {max_value}], not '{value}'")
 
         project_criterion_value = await cls.update_remote_author_relation(project_criterion_value, data)
 
