@@ -1,0 +1,50 @@
+@import '../globals';
+
+.custom-switcher {
+    position: fixed;
+    left: 10px;
+    bottom: 20px;
+    width: 80px;
+    height: 40px;
+    input {
+        visibility: hidden;
+        &:checked + .custom-switcher__slider {
+            background: url('../assets/lightmode.png') no-repeat center;
+            background-size: contain;
+            &:before {
+                -webkit-transform: translateX(40px);
+                -ms-transform: translateX(40px);
+                transform: translateX(40px);
+                background: $yellow;
+            }
+        }
+    }
+    &__slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('../assets/darkmode.png') no-repeat center;
+        background-size: contain;
+        -webkit-transition: 0.4s ease-in-out;
+        transition: 0.4s ease-in-out;
+        border-radius: 30px;
+        &:before {
+            position: absolute;
+            content: '';
+            height: 33px;
+            width: 33px;
+            top: 0;
+            bottom: 0;
+            margin: auto 4px;
+            -webkit-transition: 0.4s ease-in-out;
+            transition: 0.4s ease-in-out;
+            box-shadow: rgba(14, 30, 37, 0.12) 0 2px 4px 0, rgba(14, 30, 37, 0.32) 0 2px 16px 0;
+            background: url('../assets/darkmode_switch.png') no-repeat center;
+            background-size: contain;
+            border-radius: 50%;
+        }
+    }
+}

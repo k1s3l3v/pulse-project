@@ -1,0 +1,51 @@
+@import 'colors';
+@import 'fonts';
+
+$avatar-border: 3px solid $white;
+$avatar-border-radius: 25px;
+
+html,
+body {
+    height: 100%;
+}
+
+div[id='root'] {
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    transition: background-color 0.3s ease-in-out;
+
+    @include themed() {
+        background-color: t($white-to-black);
+    }
+}
+
+div::-webkit-scrollbar-track-piece {
+    border-radius: 10px;
+    @include themed() {
+        background-color: t($blue-to-light);
+    }
+}
+
+div::-webkit-scrollbar {
+    width: 8px;
+}
+
+div::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    @include themed() {
+        border: 2px solid t($black-to-white);
+        background-color: t($white-to-black);
+    }
+}
+
+div::-webkit-scrollbar-button:end:increment {
+    //TODO: Very interesting solution!
+    height: 5%;
+    display: block;
+    background: transparent;
+}
+
+a {
+    text-decoration: none;
+}

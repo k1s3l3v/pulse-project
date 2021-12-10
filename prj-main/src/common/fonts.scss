@@ -1,0 +1,47 @@
+.text {
+    font-style: normal;
+    font-weight: 400;
+    margin: 0;
+    &-36 {
+        font-size: 36px;
+    }
+    &-24 {
+        font-size: 24px;
+    }
+    &-20 {
+        font-size: 20px;
+    }
+    &-18 {
+        font-size: 18px;
+    }
+    &-14 {
+        font-size: 14px;
+    }
+    &-12 {
+        font-size: 12px;
+    }
+}
+
+.font {
+    &-arial {
+        font-family: 'Arial', serif;
+    }
+    &-arialBlack {
+        font-family: 'Arial Black', serif;
+    }
+    &-ptmono {
+        font-family: PT Mono, serif;
+    }
+}
+
+.weight {
+    &-400 {
+        font-weight: 400;
+    }
+    &-700 {
+        font-weight: 700;
+    }
+    &-900 {
+        font-weight: 900;
+    }
+}

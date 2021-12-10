@@ -1,0 +1,15 @@
+@import '../../common/globals';
+
+.project-container {
+    padding: 0 10.7% 0 12.5%;
+    &__header {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        .backbutton {
+            cursor: pointer;
+        }
+        @include themed() {
+            color: t($blue-to-light);
+        }
+    }
+}

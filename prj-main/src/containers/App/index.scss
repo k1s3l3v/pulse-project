@@ -1,0 +1,25 @@
+.app__controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    &_searchbar {
+        display: flex;
+        flex-direction: row;
+        width: 50%;
+        a {
+            text-decoration: none;
+        }
+    }
+}
+
+.suggestion-searchbar {
+    display: flex;
+    flex-direction: row;
+    height: 20px;
+    padding: 5px;
+    &__avatar {
+        border-radius: 50%;
+        width: 20px;
+    }
+}

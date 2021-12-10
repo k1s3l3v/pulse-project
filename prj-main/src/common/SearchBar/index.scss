@@ -1,0 +1,141 @@
+@import '../globals';
+
+$searchbar-border-radius: 20px;
+.searchbar {
+    width: 100%;
+}
+.searchbar-container {
+    width: 100%;
+    @include themed() {
+        border: 1px solid t($black-to-white);
+    }
+    box-sizing: border-box;
+    border-radius: $searchbar-border-radius;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    &__button {
+        width: 10%;
+        background: $blue;
+        border-radius: $searchbar-border-radius;
+        padding: 10px 30px;
+        margin-left: auto;
+        cursor: pointer;
+        &_text {
+            color: white;
+            text-transform: uppercase;
+        }
+    }
+    .react-autosuggest__container {
+        width: 100%;
+        margin-left: 35px;
+
+        .react-autosuggest__input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            font-family: PT Mono, serif; // Keep in mind that under this lies pseudo-element, so our meta-framework cannot be applied here
+            font-style: normal;
+            font-weight: normal;
+            font-size: 20px;
+            @include themed() {
+                color: t($black-to-white);
+            }
+            &::placeholder {
+                @include themed() {
+                    color: t($black-to-white);
+                }
+                opacity: 0.69;
+            }
+            &--focused {
+                border: none;
+                outline: none;
+            }
+        }
+        .react-autosuggest__suggestions-container {
+            position: absolute;
+            width: 100%;
+            margin-left: -35px;
+            &--open {
+                border-radius: $searchbar-border-radius;
+                @include themed() {
+                    background: t($white-to-black);
+                    border: 1px solid t($black-to-white);
+                }
+                z-index: 100;
+                ul {
+                    padding-left: 0;
+                    list-style-type: none;
+                    text-align: left;
+                    li {
+                        margin-left: 35px;
+                        margin-right: 35px;
+                        cursor: pointer;
+                        display: flex;
+                        a {
+                            width: 100%;
+                        }
+                        &:hover {
+                            background: $grey;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.react-autosuggest__suggestion--highlighted {
+    @include themed() {
+        background: t($grey-to-dark) !important;
+    }
+}
+
+.searchbar-filters {
+    display: flex;
+    flex-direction: row;
+    &__item {
+        flex: 0 0 33%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        &_filtername {
+            @include themed() {
+                color: t($black-to-white);
+            }
+            margin-bottom: auto;
+            margin-top: auto;
+        }
+        div[class^=' css'][class$='control'] {
+            border: none;
+            box-shadow: none;
+            background-color: transparent;
+        }
+        div[class^=' css'][class$='singleValue'],
+        div[class^=' css'][class$='placeholder'] {
+            font-family: PT Mono, serif;
+            font-size: 18px;
+            text-decoration: underline;
+            margin: 0;
+            @include themed() {
+                color: t($black-to-white);
+            }
+        }
+        div[class^=' css'][class$='option'] {
+            font-family: PT Mono, serif;
+            font-size: 18px;
+        }
+        div[class^=' css'][class$='menu'] {
+            margin-top: 0;
+            width: fit-content;
+        }
+        span[class^=' css'][class$='indicatorSeparator'] {
+            display: none;
+        }
+        div[class^=' css'][class$='indicatorContainer'] {
+            padding: 0;
+            width: 50%;
+        }
+    }
+}

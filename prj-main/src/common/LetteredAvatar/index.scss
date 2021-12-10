@@ -1,0 +1,24 @@
+@import '../globals';
+
+.lettered-avatar-wrapper {
+    text-align: center;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: $avatar-border;
+    @include themed() {
+        background: t($black-to-blue);
+    }
+}
+
+.lettered-avatar {
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 24px;
+    font-family: PT Mono, serif;
+    @include themed() {
+        color: t($light-blue-to-white);
+    }
+}

@@ -1,0 +1,70 @@
+@import 'src/common/globals';
+
+.project-list-element-container {
+    display: flex;
+    flex-direction: row;
+    height: 100px;
+    width: 95%;
+
+    &:not(:last-child) {
+        border-bottom: 1px solid $blue;
+    }
+    margin-left: 0 !important;
+    &__personal {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        &_avatar {
+            border: $avatar-border;
+            border-radius: 15px;
+            height: 100%;
+            width: 60px;
+            box-sizing: border-box;
+        }
+        &_info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            padding-left: 20px;
+            &-header {
+                display: flex;
+                flex-direction: row;
+                a {
+                    text-decoration: none;
+                }
+                .project-name {
+                    @include themed() {
+                        color: t($blue-to-light);
+                    }
+                    margin-right: 12px;
+                }
+            }
+            &-bio {
+                display: flex;
+                flex-direction: row;
+                a {
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+}
+.list-stuff {
+    @include themed() {
+        color: t($black-to-white);
+    }
+    margin-right: 12px;
+    &.exact {
+        color: $green;
+    }
+    &.more {
+        color: $pink;
+    }
+    &.less {
+        color: $yellow;
+    }
+}

@@ -1,0 +1,57 @@
+@import 'src/common/globals';
+.person-strip-element-container {
+    display: flex;
+    flex-direction: row;
+    height: 100px;
+    width: 100%;
+    margin-left: 0 !important;
+    &__personal {
+        padding-top: 20px;
+        padding-bottom: 30px;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        &_avatar {
+            border: $avatar-border;
+            border-radius: 15px;
+            height: 100%;
+        }
+        &_info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            padding-left: 10px;
+            &-header {
+                display: flex;
+                flex-direction: row;
+                a {
+                    text-decoration: none;
+                }
+                .user-name {
+                    @include themed() {
+                        color: t($blue-to-light);
+                    }
+                    margin-right: 12px;
+                }
+            }
+            &-bio {
+                display: flex;
+                flex-direction: row;
+                a {
+                    text-decoration: none;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+}
+.list-skill {
+    @include themed() {
+        color: t($black-to-white);
+    }
+    margin-right: 12px;
+}

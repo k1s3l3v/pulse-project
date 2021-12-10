@@ -1,0 +1,22 @@
+@import 'src/common/globals';
+
+.suggestion-item {
+    @include themed() {
+        color: t($black-to-white);
+    }
+
+    width: 100%;
+    margin-left: 5px;
+    align-self: center;
+}
+
+.viewproject-component {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    & > div {
+        margin: auto; //TODO: This is only for loader
+    }
+}

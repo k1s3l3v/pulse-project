@@ -1,0 +1,112 @@
+@import '../globals.scss';
+
+.header-container {
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 75px;
+    &__website {
+        display: flex;
+        flex-direction: row;
+        color: $white;
+        align-items: center;
+        img {
+            margin: 8px 10px auto 20px;
+        }
+        &_name {
+            color: $white;
+            margin-top: 3px; // It should be aligned with MaDo, which is somewhat larger
+            &:before {
+                content: ' ';
+                white-space: pre;
+            }
+        }
+    }
+    &__routes {
+        display: flex;
+        flex-direction: row;
+        margin-left: 20px;
+        align-items: center;
+        a {
+            text-decoration: none;
+            padding-right: 35px;
+            padding-left: 35px;
+            &:not(:last-child) {
+                border-right: 1px solid $white;
+            }
+        }
+        .route-item {
+            color: $white;
+            text-decoration: none;
+        }
+        .route-active {
+            font-weight: bold;
+        }
+    }
+    &__user {
+        display: flex;
+        flex-direction: row;
+        margin-left: auto;
+        &_personal {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            &_fullName,
+            &_title {
+                white-space: nowrap;
+            }
+            &_fullName {
+                text-align: right;
+                color: $white;
+            }
+            &_title {
+                text-align: center;
+                letter-spacing: -0.05em;
+                color: $black;
+                background: $white;
+            }
+        }
+        &_avatar {
+            height: 85%;
+            margin: auto 14px; //14px is taken from Figma
+            img {
+                height: 100%;
+                border: $avatar-border;
+                border-radius: $avatar-border-radius;
+                box-sizing: border-box;
+            }
+        }
+    }
+    &__menu {
+        display: flex;
+        margin-right: 30px;
+        img {
+            margin: auto;
+        }
+    }
+}
+
+@keyframes anima {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100% 0;
+    }
+}
+
+.loading-pulsar {
+    width: 200px;
+    height: 20px;
+    margin-bottom: 2px;
+    background-image: linear-gradient(to right, #f5f7fa, #b8c6db, #f5f7fa, #b8c6db);
+    border-radius: 10px;
+    animation: anima 1s infinite;
+    background-size: 300% 100%;
+    &.imagepulsar {
+        width: calc(75px * 0.85);
+        height: 100%;
+        border: $avatar-border;
+        border-radius: $avatar-border-radius;
+        box-sizing: border-box;
+    }
+}

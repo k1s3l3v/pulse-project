@@ -1,0 +1,79 @@
+@import '../globals';
+
+.hierarchy-tree {
+    padding-top: 25px;
+    padding-left: 10px;
+    @include themed() {
+        border: 1px solid t($black-to-white);
+    }
+    border-radius: 20px;
+    height: 100%;
+}
+
+.tree-node {
+    span {
+        cursor: pointer;
+        @include themed() {
+            color: t($black-to-white);
+        }
+        &.selected {
+            font-weight: bold;
+            text-decoration: underline;
+            @include themed() {
+                color: t($blue-to-light);
+            }
+        }
+        &.node-expanded {
+            font-weight: bold;
+        }
+    }
+    img {
+        max-width: 20px;
+        margin-left: 4px;
+        margin-bottom: 2px;
+        cursor: pointer;
+    }
+    .expanded {
+        transform: rotate(-180deg);
+        transition: transform 0.3s ease-in-out;
+    }
+    .collapsed {
+        transition: transform 0.3s ease-in-out;
+    }
+}
+
+.tree-branch {
+    padding-left: 10px;
+    animation: expand 0.3s ease-in-out;
+    animation-iteration-count: 1;
+    &.collapsed {
+        animation: collapse 0.3s ease-in-out;
+        animation-iteration-count: 1;
+    }
+}
+
+@keyframes expand {
+    0% {
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: top;
+    }
+    100% {
+        opacity: 1;
+        transform: scaleY(1);
+        transform-origin: top;
+    }
+}
+
+@keyframes collapse {
+    0% {
+        opacity: 1;
+        transform: scaleY(1);
+        transform-origin: top;
+    }
+    100% {
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: top;
+    }
+}
