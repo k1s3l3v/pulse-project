@@ -1,0 +1,3 @@
+[submodule "src/common"]
+	path = src/common
+	url = https://gitlab.com/su.ru.spb/web_dep/mado/frontend/common.git
