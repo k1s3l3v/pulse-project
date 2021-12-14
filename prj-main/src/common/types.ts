@@ -34,6 +34,8 @@ export type StaffProject = {
     assigner_id: number | null;
 };
 
+export type StaffProjectGraphData = ProjectStaffRole & ProjectStaffRoleWithStaff & {graphData: GraphData};
+
 export type UserBio = {
     active: boolean;
     primary_skill: { name: string } | null;

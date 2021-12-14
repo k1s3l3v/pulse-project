@@ -1,4 +1,4 @@
-import { FetchError } from '../types';
+import { FetchError } from '../../../../../../PycharmProjects/prj/src/common/types';
 
 export default class BaseService {
     static logout() {
@@ -21,6 +21,6 @@ export default class BaseService {
     }
 
     static request(url: string, options?: object) {
-        return fetch(url, options).then(response => this.parseResponse(response));
+        return fetch(url, options).then(response => this.parseResponse(response)).catch(e => console.log(e));
     }
 }
