@@ -2,6 +2,8 @@
 
 Service for tracking the status of projects
 
+This service is subservice of more global one, which was developed by side.
+
 The service has the following functionality:
 * `Web interface`;
 * `Integration with a third-party authorization server (with info about users, staff and projects)`;
@@ -71,3 +73,30 @@ List of variables:
 ![img_2.png](imgs/img_2.png)
 * ## Project Status
 ![img_3.png](imgs/img_3.png)
+# Views of swagger
+![swagger1.jpg](imgs/swagger1.jpg)
+![swagger1.jpg](imgs/swagger2.jpg)
+# Views of front part
+* ## Main page (projects):
+![front1.jpg](imgs/front1.jpg)
+* ## Dark theme
+![front1_dark.jpg](imgs/front1_dark.jpg)
+* ## Project page
+![front2.jpg](imgs/front2.jpg)
+* ## Dark theme
+![front2_dark.jpg](imgs/front2_dark.jpg)
+* ## Edition form
+![front3.jpg](imgs/front3.jpg)
+* ## Dark theme
+![front3_dark.jpg](imgs/front3_dark.jpg)
+* ## Result of edit
+![front4.jpg](imgs/front4.jpg)
+
+# Running project
+To run the project you need to:
+* Download Pycharm, Webstorm, Docker
+* Download side rep with Projects and Staff info 
+* Create docker containers for PostgreSQL, RabbitMQ, ElascticSearch, Redis and more one PostgreSQL container for side part of service
+* Create 3 .env files one for front and two for back and write props which were mentioned earlier
+* Run main of staff, main of pulse and "start" script of front
+* Pass keycloak authorization
