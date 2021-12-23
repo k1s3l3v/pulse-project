@@ -91,3 +91,12 @@ List of variables:
 ![front3_dark.jpg](imgs/front3_dark.jpg)
 * ## Result of edit
 ![front4.jpg](imgs/front4.jpg)
+
+# Running project
+To run the project you need to:
+* Download Pycharm, Webstorm, Docker
+* Download side rep with Projects and Staff info 
+* Create docker containers for PostgreSQL, RabbitMQ, ElascticSearch, Redis and more one PostgreSQL container for side part of service
+* Create 3 .env files one for front and two for back and write props which were mentioned earlier
+* Run main of staff, main of pulse and "start" script of front
+* Pass keycloak authorization
