@@ -1,5 +1,5 @@
-import AuthService from '../../../../../../PycharmProjects/prj/src/common/services/AuthService';
-import {Entities, EntityAlias, FetchError, ProjectCriterion} from '../../../../../../PycharmProjects/prj/src/common/types';
+import AuthService from './AuthService';
+import {Entities, EntityAlias, FetchError, ProjectCriterion} from '../types';
 
 export default class EntityService extends AuthService {
     static async getStaffEntities(entities: EntityAlias[]): Promise<Entities | FetchError> {
@@ -29,7 +29,7 @@ export default class EntityService extends AuthService {
         );
     }
 
-    static async getCriteria(): Promise<Entities | FetchError> {
+    static async getCriteria(): Promise<{ project_criteria: ProjectCriterion[] } | FetchError> {
         const options: RequestInit = {
             method: 'GET',
         };

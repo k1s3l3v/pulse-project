@@ -12,4 +12,133 @@
             color: t($blue-to-light);
         }
     }
+    &__dates {
+        margin-top: 40px;
+        margin-bottom: 20px;
+        @include themed() {
+            color: t($black-to-white);
+        }
+        &_date-1 {
+            .text {
+                @include themed() {
+                    color: t($blue-to-light);
+                    font-size: 22px;
+                }
+            }
+        }
+        &_date-2 {
+            .text {
+                @include themed() {
+                    color: t($blue-to-light);
+                    font-size: 22px;
+                }
+            }
+            margin-left: 11%;
+        }
+        &_date-3 {
+            margin-left: 90%;
+            display: flex;
+            flex-direction: column;
+            @include themed() {
+                color: t($black-to-white);
+                font-size: 22px;
+            }
+        }
+    }
+    &__des {
+        @include themed() {
+            color: t($black-to-white);
+        }
+    }
+    &__project {
+        &_customer {
+            font-size: 22px;
+            @include themed() {
+                color: t($blue-to-light);
+            }
+        }
+        &_account {
+            @include themed() {
+            color: t($blue-to-light);
+            font-size: 22px;
+            }
+        }
+        &_lead {
+            @include themed() {
+                color: t($blue-to-light);
+                font-size: 22px;
+            }
+        }
+    }
+}
+
+.column {
+    float: left;
+    width: 33%;
+}
+
+.column-2 {
+    float: left;
+    width: 66%;
+    @include themed() {
+        color: t($black-to-white);
+    }
+    margin-bottom: 15px;
+}
+
+.column2 {
+    float: left;
+    width: 66%;
+    @include themed() {
+        color: t($black-to-white);
+    }
+    margin-bottom: 15px;
+
+}
+
+.column_2 {
+    overflow-y: scroll;
+    height: 130px; /* Высота блока */
+    padding: 5px;
+    width: 66%;
+    float: right;
+    display: flex;
+    flex-direction: column;
+}
+
+.b-t-w {
+    @include themed() {
+        color: t($black-to-white);
+    }
+}
+
+.w-t-b {
+    @include themed() {
+        color: t($white-to-black);
+    }
+}
+
+.b-t-l {
+    @include themed() {
+        color: t($blue-to-light);
+    }
+}
+
+.edit-button {
+    cursor: pointer;
+}
+
+.criterion-name {
+    float:left;
+    @include themed() {
+        color: t($black-to-white);
+    }
+}
+
+.value {
+    float:right;
+    padding-right: 5px;
+    @include themed() {
+        color: t($black-to-white);
+    }
 }

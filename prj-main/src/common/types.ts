@@ -334,3 +334,48 @@ export type ProjectsMainRoles = {
     project_lead: Role;
     project_accountant: Role;
 };
+
+export type ProjectCriterion = {
+    project_criterion_id: number;
+    name: string;
+    is_mandatory: boolean;
+    max_value: number;
+    normal_threshold: number;
+}
+
+export type ProjectSpecificCriterion = {
+    project_criterion_id: number;
+    is_mandatory: boolean;
+}
+
+export type ProjectStatusLatestGrade = {
+    project_criterion_id: number;
+    date: string;
+    value: number;
+    comment: string;
+    author_id: number | null;
+}
+
+export type ProjectStatusLatestLogRecord = {
+    project_criterion_id: number;
+    date: string;
+    old_value: number;
+    new_value: number;
+    comment: string;
+    author_id: number | null;
+}
+
+export type ProjectStatus = {
+    project_status_id: number;
+    project_id: number;
+    aggregated_value: number;
+    latest_updated_at: string;
+    latest_updater_id: number | null;
+    latest_grades: {[str: string]: ProjectStatusLatestGrade};
+    latest_log: ProjectStatusLatestLogRecord[];
+}
+
+export type ProjectPulse = {
+    status: ProjectStatus;
+    criteria: ProjectSpecificCriterion[];
+}

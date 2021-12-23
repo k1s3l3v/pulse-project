@@ -1,4 +1,12 @@
-import { FetchError, Filter, Project, ProjectWithStaff, User } from '../common/types';
+import {
+    FetchError,
+    Filter,
+    Project,
+    ProjectCriterion,
+    ProjectPulse,
+    ProjectWithStaff,
+    User
+} from '../common/types';
 import AuthService from '../common/services/AuthService';
 import { convertFiltersToQuery } from '../utils/Converters';
 
@@ -31,4 +39,31 @@ export default class ProjectsService extends AuthService {
             options
         );
     }
+
+    static async getProjectPulse(project_id: number): Promise<ProjectPulse | FetchError> {
+        const options: RequestInit = {
+            method: 'GET',
+        };
+
+        return await this.authRequest(
+            `${process.env.REACT_APP_API_PULSE_BASE}/project_pulse/${project_id}`,
+            options
+        );
+    }
+
+    static async putCriterion(
+        project_criterion: {[str: string]: string | number},
+        project_id: number
+    ): Promise<FetchError> {
+        const options: RequestInit = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(project_criterion)
+        };
+        return await this.authRequest(
+            `${process.env.REACT_APP_API_PULSE_BASE}/project_pulse/${project_id}`,
+            options
+        );
+    }
 }
+

@@ -1,4 +1,4 @@
-import { FetchError } from '../../../../../../PycharmProjects/prj/src/common/types';
+import { FetchError } from '../types';
 
 export default class BaseService {
     static logout() {
