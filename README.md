@@ -46,7 +46,7 @@ List of variables:
 * `PULSE_CELERY_BROKER_URL` - optional (`redis://127.0.0.1:6379/1` by default); URL of the default broker for celery
 * `PULSE_CELERY_IMPORTS` - optional (`['app.celery.tasks']` by default); list of modules celery worker should import
 * `PULSE_CELERY_TIMEZONE` - optional (`Europe/Moscow` by default); celery worker timezone
-* `CLIENT_ID` - optional (`mado` by default); ITS OAuth2 application ID
+* `CLIENT_ID` - optional (`mado` by default); OAuth2 application ID
 * `USE_OAUTH2_AUTHORIZATION` - optional (`true` by default); is it needs authorization only by one service
 * `PULSE_WORKERS` - optional; number of uvicorn workers
 * `BROKER_HOST` - optional (`127.0.0.1` by default); host of the message broker
