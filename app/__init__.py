@@ -14,7 +14,7 @@ _app: Optional[FastAPI] = None
 def _init_app() -> FastAPI:
     app = FastAPI(title='MADO pulse API', description='API for MADO pulse service', version=settings.VERSION,
                   openapi_url=f'{settings.URL_PREFIX}/openapi.json',
-                  swagger_ui_init_oauth={'clientId': settings.ITS_CLIENT_ID},
+                  swagger_ui_init_oauth={'clientId': settings.PM_CLIENT_ID},
                   docs_url=f'{settings.URL_PREFIX}/docs', redoc_url=f'{settings.URL_PREFIX}/redoc')
     app.mount(f'{settings.URL_PREFIX}/static', StaticFiles(directory='app/static'), name='static')
     if len(settings.CORS_ORIGINS) > 0:

@@ -39,13 +39,13 @@ export default class AuthService extends BaseService {
     static authorize() {
         const curUrl = encodeURIComponent(window.location.origin + '/auth');
         window.location.replace(
-            `${process.env.REACT_APP_API_STAFF_BASE}/auth/code?service=ITS&redirect_uri=${curUrl}`
+            `${process.env.REACT_APP_API_STAFF_BASE}/auth/code?service=PM&redirect_uri=${curUrl}`
         );
     }
 
     static getTokenRequest(code: string, cb: () => void, errorCb: (e: any) => void) {
         const curUrl = encodeURIComponent(window.location.origin + '/auth');
-        const tokenUrl = `${process.env.REACT_APP_API_STAFF_BASE}/auth/token?service=ITS&grant_type=authorization_code&code=${code}&redirect_uri=${curUrl}`;
+        const tokenUrl = `${process.env.REACT_APP_API_STAFF_BASE}/auth/token?service=PM&grant_type=authorization_code&code=${code}&redirect_uri=${curUrl}`;
         const options = {
             method: 'POST',
             mode: 'cors',

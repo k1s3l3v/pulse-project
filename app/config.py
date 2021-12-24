@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     CELERY_IMPORTS: List[str] = ['app.celery.tasks']
     CELERY_TIMEZONE: str = 'Europe/Moscow'
 
-    ITS_CLIENT_ID: str = Field('mado', env='ITS_CLIENT_ID')
+    PM_CLIENT_ID: str = Field('mado', env='PM_CLIENT_ID')
     USE_OAUTH2_AUTHORIZATION: bool = Field(True, env='USE_OAUTH2_AUTHORIZATION')
 
     BROKER_HOST: str = Field('127.0.0.1', env='BROKER_HOST')
